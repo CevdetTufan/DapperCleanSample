@@ -1,43 +1,99 @@
-﻿using Domain.Common;
+﻿using Dapper;
+using Domain.Common;
 using Domain.Entities;
 using Domain.Interfaces;
+using Infrastructure.Data;
 
 namespace Infrastructure.Repositories;
 
 internal class CustomerRepository : ICustomerRepository
 {
-	public Task<int> AddAsync(Customer customer)
+	private readonly DapperContext _context;
+
+	public CustomerRepository(DapperContext context)
 	{
-		throw new NotImplementedException();
+		_context = context;
 	}
 
-	public Task<bool> DeleteAsync(int id)
+	public async Task<Customer?> GetByIdAsync(int id)
 	{
-		throw new NotImplementedException();
+		const string sql = "SELECT * FROM Customers WHERE Id = @Id";
+		using var connection = _context.CreateConnection();
+		return await connection.QueryFirstOrDefaultAsync<Customer>(sql, new { Id = id });
 	}
 
-	public Task<IEnumerable<Customer>> GetAllAsync()
+	public async Task<Customer?> GetByEmailAsync(string email)
 	{
-		throw new NotImplementedException();
+		const string sql = "SELECT * FROM Customers WHERE Email = @Email";
+		using var connection = _context.CreateConnection();
+		return await connection.QueryFirstOrDefaultAsync<Customer>(sql, new { Email = email });
 	}
 
-	public Task<Customer?> GetByEmailAsync(string email)
+	public async Task<IEnumerable<Customer>> GetAllAsync()
 	{
-		throw new NotImplementedException();
+		const string sql = "SELECT * FROM Customers";
+		using var connection = _context.CreateConnection();
+		return await connection.QueryAsync<Customer>(sql);
 	}
 
-	public Task<Customer?> GetByIdAsync(int id)
+	public async Task<PagedResult<Customer>> GetPagedAsync(int pageNumber, int pageSize)
 	{
-		throw new NotImplementedException();
+		const string countSql = "SELECT COUNT(*) FROM Customers";
+		const string dataSql = """
+            SELECT * FROM Customers
+            ORDER BY Id
+            OFFSET @Offset ROWS
+            FETCH NEXT @PageSize ROWS ONLY
+            """;
+
+		using var connection = _context.CreateConnection();
+		var totalCount = await connection.ExecuteScalarAsync<int>(countSql);
+		var offset = (pageNumber - 1) * pageSize;
+		var items = await connection.QueryAsync<Customer>(dataSql, new { Offset = offset, PageSize = pageSize });
+
+		return new PagedResult<Customer>(items, pageNumber, pageSize, totalCount);
 	}
 
-	public Task<PagedResult<Customer>> GetPagedAsync(int pageNumber, int pageSize)
+	public async Task<int> AddAsync(Customer customer)
 	{
-		throw new NotImplementedException();
+		const string sql = """
+            INSERT INTO Customers (Name, Email, CreatedAt)
+            VALUES (@Name, @Email, @CreatedAt);
+            SELECT CAST(SCOPE_IDENTITY() AS INT);
+            """;
+
+		using var connection = _context.CreateConnection();
+		return await connection.ExecuteScalarAsync<int>(sql, new
+		{
+			customer.Name,
+			Email = customer.Email.Value,
+			customer.CreatedAt
+		});
 	}
 
-	public Task<bool> UpdateAsync(Customer customer)
+	public async Task<bool> UpdateAsync(Customer customer)
 	{
-		throw new NotImplementedException();
+		const string sql = """
+            UPDATE Customers 
+            SET Name = @Name, Email = @Email
+            WHERE Id = @Id
+            """;
+
+		using var connection = _context.CreateConnection();
+		var affected = await connection.ExecuteAsync(sql, new
+		{
+			customer.Id,
+			customer.Name,
+			Email = customer.Email.Value
+		});
+		return affected > 0;
+	}
+
+	public async Task<bool> DeleteAsync(int id)
+	{
+		const string sql = "DELETE FROM Customers WHERE Id = @Id";
+		using var connection = _context.CreateConnection();
+		var affected = await connection.ExecuteAsync(sql, new { Id = id });
+		return affected > 0;
 	}
 }
