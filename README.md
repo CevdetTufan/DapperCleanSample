@@ -4,7 +4,7 @@
 
 A .NET 10 sample project demonstrating Clean Architecture principles with Dapper ORM. This project showcases best practices for building maintainable, testable, and scalable applications.
 
-## ??? Architecture Overview
+## Architecture Overview
 
 This project follows **Clean Architecture** principles with clear separation of concerns:
 
@@ -33,7 +33,7 @@ This project follows **Clean Architecture** principles with clear separation of 
 ???????????????????????????????????????????????????????????????
 ```
 
-## ?? Project Structure
+## Project Structure
 
 ```
 DapperCleanSample/
@@ -94,7 +94,7 @@ DapperCleanSample/
         ??? ModuleInitializer.cs        # Assembly initialization
 ```
 
-## ??? Technologies & Libraries
+## Technologies & Libraries
 
 ### Core
 | Package | Version | Purpose |
@@ -111,7 +111,7 @@ DapperCleanSample/
 | Microsoft.Data.Sqlite | 10.0.1 | In-memory database for tests |
 | coverlet.collector | 6.0.4 | Code coverage |
 
-## ?? Key Features
+## Key Features
 
 ### Domain Layer
 
@@ -241,7 +241,7 @@ dotnet test tests/Infrastructure.IntegrationTests
 | Domain | Unit Tests | 28+ |
 | Infrastructure | Integration Tests | 19+ |
 
-## ?? Getting Started
+## Getting Started
 
 ### Prerequisites
 - .NET 10 SDK
