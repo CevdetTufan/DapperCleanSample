@@ -217,7 +217,7 @@ public class EmailTypeHandler : SqlMapper.TypeHandler<Email>
 }
 ```
 
-## ?? Testing
+## Testing
 
 ### Run All Tests
 ```bash
@@ -274,7 +274,7 @@ dotnet build
 dotnet test
 ```
 
-## ?? Design Decisions
+## Design Decisions
 
 ### Why Dapper over EF Core?
 - **Performance**: Dapper is faster for read-heavy operations
@@ -291,11 +291,11 @@ dotnet test
 - **Dapper Compatible**: Works via reflection
 - **Domain Logic**: Business rules enforced in entity
 
-## ?? License
+## License
 
 This project is open source and available under the [MIT License](LICENSE).
 
-## ?? Contributing
+## Contributing
 
 Contributions, issues, and feature requests are welcome!
 
