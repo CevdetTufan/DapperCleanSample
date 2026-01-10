@@ -5,5 +5,6 @@
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Domain.UnitTest/Domain.UnitTest.csproj" />
+    <Project Path="tests/Infrastructure.IntegrationTests/Infrastructure.IntegrationTests.csproj" Id="ca748c17-51fc-4403-8e95-4b47cc671e33" />
   </Folder>
 </Solution>
