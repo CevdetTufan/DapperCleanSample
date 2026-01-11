@@ -1,4 +1,5 @@
 using Application.DTOs.Product;
+using Application.Mappings;
 using Domain.Common;
 using Domain.Entities;
 using Domain.Interfaces;
@@ -17,19 +18,19 @@ public class ProductService : IProductService
 	public async Task<ProductDto?> GetByIdAsync(int id)
 	{
 		var product = await _productRepository.GetByIdAsync(id);
-		return product is null ? null : MapToDto(product);
+		return product?.ToDto();
 	}
 
 	public async Task<IEnumerable<ProductDto>> GetAllAsync()
 	{
 		var products = await _productRepository.GetAllAsync();
-		return products.Select(MapToDto);
+		return products.Select(p => p.ToDto());
 	}
 
 	public async Task<PagedResult<ProductDto>> GetPagedAsync(int pageNumber, int pageSize)
 	{
 		var result = await _productRepository.GetPagedAsync(pageNumber, pageSize);
-		var dtos = result.Items.Select(MapToDto);
+		var dtos = result.Items.Select(p => p.ToDto());
 		return new PagedResult<ProductDto>(dtos, pageNumber, pageSize, result.TotalCount);
 	}
 
@@ -53,15 +54,5 @@ public class ProductService : IProductService
 	public async Task<bool> DeleteAsync(int id)
 	{
 		return await _productRepository.DeleteAsync(id);
-	}
-
-	private static ProductDto MapToDto(Product product)
-	{
-		return new ProductDto(
-			product.Id,
-			product.Name,
-			product.Price,
-			product.CreatedAt
-		);
 	}
 }

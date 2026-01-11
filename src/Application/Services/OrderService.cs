@@ -1,4 +1,5 @@
 using Application.DTOs.Order;
+using Application.Mappings;
 using Domain.Common;
 using Domain.Entities;
 using Domain.Interfaces;
@@ -19,25 +20,25 @@ public class OrderService : IOrderService
 	public async Task<OrderDto?> GetByIdAsync(int id)
 	{
 		var order = await _orderRepository.GetByIdAsync(id);
-		return order is null ? null : MapToDto(order);
+		return order?.ToDto();
 	}
 
 	public async Task<OrderDto?> GetByIdWithItemsAsync(int id)
 	{
 		var order = await _orderRepository.GetByIdWithItemsAsync(id);
-		return order is null ? null : MapToDto(order);
+		return order?.ToDto();
 	}
 
 	public async Task<IEnumerable<OrderDto>> GetByCustomerIdAsync(int customerId)
 	{
 		var orders = await _orderRepository.GetByCustomerIdAsync(customerId);
-		return orders.Select(MapToDto);
+		return orders.Select(o => o.ToDto());
 	}
 
 	public async Task<PagedResult<OrderDto>> GetPagedAsync(int pageNumber, int pageSize)
 	{
 		var result = await _orderRepository.GetPagedAsync(pageNumber, pageSize);
-		var dtos = result.Items.Select(MapToDto);
+		var dtos = result.Items.Select(o => o.ToDto());
 		return new PagedResult<OrderDto>(dtos, pageNumber, pageSize, result.TotalCount);
 	}
 
@@ -99,26 +100,5 @@ public class OrderService : IOrderService
 	{
 		await _orderItemRepository.DeleteByOrderIdAsync(id);
 		return await _orderRepository.DeleteAsync(id);
-	}
-
-	private static OrderDto MapToDto(Order order)
-	{
-		var items = order.Items.Select(i => new OrderItemDto(
-			i.Id,
-			i.ProductId,
-			i.Quantity,
-			i.UnitPrice,
-			i.TotalPrice
-		));
-
-		return new OrderDto(
-			order.Id,
-			order.CustomerId,
-			order.OrderDate,
-			order.Status,
-			order.TotalAmount,
-			order.CreatedAt,
-			items
-		);
 	}
 }

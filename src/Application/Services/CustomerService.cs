@@ -1,4 +1,5 @@
-﻿using Application.DTOs.Customer;
+using Application.DTOs.Customer;
+using Application.Mappings;
 using Domain.Common;
 using Domain.Entities;
 using Domain.Interfaces;
@@ -18,25 +19,25 @@ public class CustomerService : ICustomerService
 	public async Task<CustomerDto?> GetByIdAsync(int id)
 	{
 		var customer = await _customerRepository.GetByIdAsync(id);
-		return customer is null ? null : MapToDto(customer);
+		return customer?.ToDto();
 	}
 
 	public async Task<CustomerDto?> GetByEmailAsync(string email)
 	{
 		var customer = await _customerRepository.GetByEmailAsync(email);
-		return customer is null ? null : MapToDto(customer);
+		return customer?.ToDto();
 	}
 
 	public async Task<IEnumerable<CustomerDto>> GetAllAsync()
 	{
 		var customers = await _customerRepository.GetAllAsync();
-		return customers.Select(MapToDto);
+		return customers.Select(c => c.ToDto());
 	}
 
 	public async Task<PagedResult<CustomerDto>> GetPagedAsync(int pageNumber, int pageSize)
 	{
 		var result = await _customerRepository.GetPagedAsync(pageNumber, pageSize);
-		var dtos = result.Items.Select(MapToDto);
+		var dtos = result.Items.Select(c => c.ToDto());
 		return new PagedResult<CustomerDto>(dtos, pageNumber, pageSize, result.TotalCount);
 	}
 
@@ -61,15 +62,5 @@ public class CustomerService : ICustomerService
 	public async Task<bool> DeleteAsync(int id)
 	{
 		return await _customerRepository.DeleteAsync(id);
-	}
-
-	private static CustomerDto MapToDto(Customer customer)
-	{
-		return new CustomerDto(
-			customer.Id,
-			customer.Name,
-			customer.Email.Value,
-			customer.CreatedAt
-		);
 	}
 }
