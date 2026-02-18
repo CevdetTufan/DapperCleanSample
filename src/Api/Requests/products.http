@@ -1,0 +1,53 @@
+@baseUrl = https://localhost:7142
+
+### ========================================
+### PRODUCT ENDPOINTS
+### ========================================
+
+### Get All Products
+GET {{baseUrl}}/api/products
+
+### Get Products Paged
+GET {{baseUrl}}/api/products/paged?pageNumber=1&pageSize=10
+
+### Get Product By Id
+GET {{baseUrl}}/api/products/1
+
+### Create Product
+POST {{baseUrl}}/api/products
+Content-Type: application/json
+
+{
+  "name": "Laptop",
+  "price": 15000.00
+}
+
+### Create Another Product
+POST {{baseUrl}}/api/products
+Content-Type: application/json
+
+{
+  "name": "Mouse",
+  "price": 250.50
+}
+
+### Create Third Product
+POST {{baseUrl}}/api/products
+Content-Type: application/json
+
+{
+  "name": "Keyboard",
+  "price": 450.00
+}
+
+### Update Product
+PUT {{baseUrl}}/api/products/1
+Content-Type: application/json
+
+{
+  "name": "Gaming Laptop",
+  "price": 25000.00
+}
+
+### Delete Product
+DELETE {{baseUrl}}/api/products/1

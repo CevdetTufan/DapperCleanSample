@@ -1,0 +1,47 @@
+@baseUrl = https://localhost:7142
+
+### ========================================
+### CUSTOMER ENDPOINTS
+### ========================================
+
+### Get All Customers
+GET {{baseUrl}}/api/customers
+
+### Get Customers Paged
+GET {{baseUrl}}/api/customers/paged?pageNumber=1&pageSize=10
+
+### Get Customer By Id
+GET {{baseUrl}}/api/customers/1
+
+### Get Customer By Email
+GET {{baseUrl}}/api/customers/email/john@example.com
+
+### Create Customer
+POST {{baseUrl}}/api/customers
+Content-Type: application/json
+
+{
+  "name": "John Doe",
+  "email": "john@example.com"
+}
+
+### Create Another Customer
+POST {{baseUrl}}/api/customers
+Content-Type: application/json
+
+{
+  "name": "Jane Smith",
+  "email": "jane@example.com"
+}
+
+### Update Customer
+PUT {{baseUrl}}/api/customers/1
+Content-Type: application/json
+
+{
+  "name": "John Doe Updated",
+  "email": "john.updated@example.com"
+}
+
+### Delete Customer
+DELETE {{baseUrl}}/api/customers/1

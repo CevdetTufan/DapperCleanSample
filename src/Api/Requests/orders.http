@@ -1,0 +1,71 @@
+@baseUrl = https://localhost:7142
+
+### ========================================
+### ORDER ENDPOINTS
+### ========================================
+
+### Get Orders Paged
+GET {{baseUrl}}/api/orders/paged?pageNumber=1&pageSize=10
+
+### Get Order By Id
+GET {{baseUrl}}/api/orders/1
+
+### Get Order With Items (Details)
+GET {{baseUrl}}/api/orders/1/details
+
+### Get Orders By Customer
+GET {{baseUrl}}/api/orders/customer/1
+
+### Create Order (Customer 1, with 2 items)
+POST {{baseUrl}}/api/orders
+Content-Type: application/json
+
+{
+  "customerId": 1,
+  "items": [
+    {
+      "productId": 1,
+      "quantity": 2,
+      "unitPrice": 15000.00
+    },
+    {
+      "productId": 2,
+      "quantity": 1,
+      "unitPrice": 250.50
+    }
+  ]
+}
+
+### Create Another Order
+POST {{baseUrl}}/api/orders
+Content-Type: application/json
+
+{
+  "customerId": 1,
+  "items": [
+    {
+      "productId": 3,
+      "quantity": 1,
+      "unitPrice": 450.00
+    }
+  ]
+}
+
+### ========================================
+### ORDER STATUS CHANGES
+### ========================================
+
+### Mark Order As Paid
+PATCH {{baseUrl}}/api/orders/1/pay
+
+### Ship Order
+PATCH {{baseUrl}}/api/orders/1/ship
+
+### Deliver Order
+PATCH {{baseUrl}}/api/orders/1/deliver
+
+### Cancel Order
+PATCH {{baseUrl}}/api/orders/2/cancel
+
+### Delete Order
+DELETE {{baseUrl}}/api/orders/1

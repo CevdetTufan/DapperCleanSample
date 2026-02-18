@@ -31,3 +31,6 @@ app.UseHttpsRedirection();
 app.MapEndpoints();
 
 await app.RunAsync();
+
+// Required for WebApplicationFactory in integration tests
+public partial class Program { }
