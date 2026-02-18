@@ -42,8 +42,7 @@ internal class CustomerRepository : ICustomerRepository
 		const string dataSql = """
             SELECT * FROM Customers
             ORDER BY Id
-            OFFSET @Offset ROWS
-            FETCH NEXT @PageSize ROWS ONLY
+            LIMIT @PageSize OFFSET @Offset
             """;
 
 		using var connection = _context.CreateConnection();
@@ -59,7 +58,7 @@ internal class CustomerRepository : ICustomerRepository
 		const string sql = """
             INSERT INTO Customers (Name, Email, CreatedAt)
             VALUES (@Name, @Email, @CreatedAt);
-            SELECT CAST(SCOPE_IDENTITY() AS INT);
+            SELECT last_insert_rowid();
             """;
 
 		using var connection = _context.CreateConnection();

@@ -33,7 +33,7 @@ internal class OrderItemRepository : IOrderItemRepository
 		const string sql = """
             INSERT INTO OrderItems (OrderId, ProductId, Quantity, UnitPrice)
             VALUES (@OrderId, @ProductId, @Quantity, @UnitPrice);
-            SELECT CAST(SCOPE_IDENTITY() AS INT);
+            SELECT last_insert_rowid();
             """;
 
 		using var connection = _context.CreateConnection();

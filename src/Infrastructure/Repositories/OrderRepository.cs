@@ -73,8 +73,7 @@ internal class OrderRepository : IOrderRepository
 		const string dataSql = """
             SELECT * FROM Orders
             ORDER BY OrderDate DESC
-            OFFSET @Offset ROWS
-            FETCH NEXT @PageSize ROWS ONLY
+            LIMIT @PageSize OFFSET @Offset
             """;
 
 		using var connection = _context.CreateConnection();
@@ -92,8 +91,7 @@ internal class OrderRepository : IOrderRepository
             SELECT * FROM Orders
             WHERE CustomerId = @CustomerId
             ORDER BY OrderDate DESC
-            OFFSET @Offset ROWS
-            FETCH NEXT @PageSize ROWS ONLY
+            LIMIT @PageSize OFFSET @Offset
             """;
 
 		using var connection = _context.CreateConnection();
@@ -109,7 +107,7 @@ internal class OrderRepository : IOrderRepository
 		const string sql = """
             INSERT INTO Orders (CustomerId, OrderDate, Status, CreatedAt)
             VALUES (@CustomerId, @OrderDate, @Status, @CreatedAt);
-            SELECT CAST(SCOPE_IDENTITY() AS INT);
+            SELECT last_insert_rowid();
             """;
 
 		using var connection = _context.CreateConnection();

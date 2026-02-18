@@ -20,7 +20,7 @@ internal class ProductRepository : IProductRepository
 		const string sql = """
             INSERT INTO Products (Name, Price, CreatedAt)
             VALUES (@Name, @Price, @CreatedAt);
-            SELECT CAST(SCOPE_IDENTITY() AS INT);
+            SELECT last_insert_rowid();
             """;
 
 		using var connection = _context.CreateConnection();
@@ -55,8 +55,7 @@ internal class ProductRepository : IProductRepository
 		const string dataSql = """
             SELECT * FROM Products
             ORDER BY Id
-            OFFSET @Offset ROWS
-            FETCH NEXT @PageSize ROWS ONLY
+            LIMIT @PageSize OFFSET @Offset
             """;
 
 		using var connection = _context.CreateConnection();
