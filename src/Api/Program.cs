@@ -14,6 +14,16 @@ builder.Services.AddInfrastructure(connectionString);
 
 builder.Services.AddOpenApi();
 
+builder.Services.AddCors(options =>
+{
+	options.AddPolicy("AllowUI", policy =>
+	{
+		policy.WithOrigins("http://localhost:3000", "http://localhost:5173")
+			  .AllowAnyHeader()
+			  .AllowAnyMethod();
+	});
+});
+
 var app = builder.Build();
 
 // Initialize database
@@ -25,6 +35,8 @@ if (app.Environment.IsDevelopment())
 	app.MapOpenApi();
 	app.MapScalarApiReference();
 }
+
+app.UseCors("AllowUI");
 
 app.UseHttpsRedirection();
 
