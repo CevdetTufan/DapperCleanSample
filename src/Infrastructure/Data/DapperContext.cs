@@ -1,4 +1,4 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using Microsoft.Data.Sqlite;
 using System.Data;
 
 namespace Infrastructure.Data;
@@ -12,5 +12,5 @@ internal class DapperContext
 		_connectionString = connectionString;
 	}
 
-	public IDbConnection CreateConnection() => new SqlConnection(_connectionString);
+	public IDbConnection CreateConnection() => new SqliteConnection(_connectionString);
 }

@@ -15,7 +15,9 @@ public static class DependencyInjection
 	{
 		RegisterTypeHandlers();
 
-		services.AddSingleton(new DapperContext(connectionString));
+		var context = new DapperContext(connectionString);
+		services.AddSingleton(context);
+		services.AddSingleton(new DatabaseInitializer(context));
 
 		services.AddScoped<IProductRepository, ProductRepository>();
 		services.AddScoped<ICustomerRepository, CustomerRepository>();

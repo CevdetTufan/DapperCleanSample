@@ -1,6 +1,7 @@
 using Api.Endpoints;
 using Application;
 using Infrastructure;
+using Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,10 @@ builder.Services.AddInfrastructure(connectionString);
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
+
+// Initialize database
+var dbInitializer = app.Services.GetRequiredService<DatabaseInitializer>();
+await dbInitializer.InitializeAsync();
 
 if (app.Environment.IsDevelopment())
 {
