@@ -2,6 +2,7 @@ using Api.Endpoints;
 using Application;
 using Infrastructure;
 using Infrastructure.Data;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +23,7 @@ await dbInitializer.InitializeAsync();
 if (app.Environment.IsDevelopment())
 {
 	app.MapOpenApi();
+	app.MapScalarApiReference();
 }
 
 app.UseHttpsRedirection();
