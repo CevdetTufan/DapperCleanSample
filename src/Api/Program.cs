@@ -30,6 +30,19 @@ var app = builder.Build();
 var dbInitializer = app.Services.GetRequiredService<DatabaseInitializer>();
 await dbInitializer.InitializeAsync();
 
+// Seed fake data (only if database is empty)
+var dataSeeder = app.Services.GetRequiredService<DataSeeder>();
+var wasSeeded = await dataSeeder.SeedAsync(customerCount: 15, productCount: 25, orderCount: 20);
+
+if (wasSeeded)
+{
+	app.Logger.LogInformation("Database seeded with fake data.");
+}
+else
+{
+	app.Logger.LogInformation("Database already contains data, skipping seed.");
+}
+
 if (app.Environment.IsDevelopment())
 {
 	app.MapOpenApi();

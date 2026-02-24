@@ -18,6 +18,7 @@ public static class DependencyInjection
 		var context = new DapperContext(connectionString);
 		services.AddSingleton(context);
 		services.AddSingleton(new DatabaseInitializer(context));
+		services.AddSingleton(new DataSeeder(context));
 
 		services.AddScoped<IProductRepository, ProductRepository>();
 		services.AddScoped<ICustomerRepository, CustomerRepository>();
