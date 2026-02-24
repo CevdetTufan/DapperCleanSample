@@ -62,5 +62,9 @@ app.MapEndpoints();
 
 await app.RunAsync();
 
-// Required for WebApplicationFactory in integration tests
+// Minimal API kullanıldığında derleyici Program sınıfını internal üretir; dış assembly'ler (test projeleri) erişemez.
+// "public partial class Program" yazarak sınıfı public yapıyor, partial keyword'ü ise derleyicinin ürettiği
+// sınıfla bu tanımı birleştirmesini sağlıyor. Bu sayede integration test projesinde
+// WebApplicationFactory<Program> kullanılarak uygulama gerçek bir web sunucusu gibi ayağa kaldırılabilir
+// ve testler tüm middleware/veritabanı pipeline'ı dahil gerçek endpoint'lere HTTP isteği atabilir.
 public partial class Program { }
