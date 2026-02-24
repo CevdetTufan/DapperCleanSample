@@ -10,15 +10,29 @@ const apiClient = axios.create({
 apiClient.interceptors.response.use(
     (response) => response,
     (error) => {
-        if (error.response) {
-            const { status, data } = error.response;
-            console.error(`API Error [${status}]:`, data);
-        } else if (error.request) {
-            console.error('No response from server:', error.message);
-        } else {
-            console.error('Request error:', error.message);
+        // RFC 9457 Problem Details formatını parse et
+        const data = error.response?.data;
+        let message = 'An unexpected error occurred';
+
+        if (data) {
+            if (data.errors) {
+                // Validation hataları: { "Field": ["msg1", "msg2"] }
+                message = Object.values(data.errors as Record<string, string[]>)
+                    .flat()
+                    .join(', ');
+            } else if (data.detail) {
+                // Tek satır hata mesajı
+                message = data.detail;
+            } else if (data.title) {
+                // Genel başlık (ör. "Bad Request")
+                message = data.title;
+            }
+        } else if (error.message) {
+            // Sunucuya ulaşılamadı vb.
+            message = error.message;
         }
-        return Promise.reject(error);
+
+        return Promise.reject(new Error(message));
     }
 );
 

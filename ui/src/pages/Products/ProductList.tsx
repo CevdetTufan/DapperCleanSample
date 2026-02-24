@@ -52,8 +52,7 @@ const ProductList: React.FC = () => {
             setProducts(result.items);
             setTotalCount(result.totalCount);
         } catch (error) {
-            showToast('Failed to load products', 'error');
-            console.error(error);
+            showToast(error instanceof Error ? error.message : 'Failed to load products', 'error');
         } finally {
             setLoading(false);
         }
@@ -95,8 +94,8 @@ const ProductList: React.FC = () => {
             }
             setDialogOpen(false);
             fetchProducts();
-        } catch {
-            showToast('Failed to save product', 'error');
+        } catch (error) {
+            showToast(error instanceof Error ? error.message : 'Failed to save product', 'error');
         } finally {
             setSaving(false);
         }
@@ -109,8 +108,8 @@ const ProductList: React.FC = () => {
             showToast('Product deleted successfully');
             setDeleteTarget(null);
             fetchProducts();
-        } catch {
-            showToast('Failed to delete product', 'error');
+        } catch (error) {
+            showToast(error instanceof Error ? error.message : 'Failed to delete product', 'error');
         }
     };
 

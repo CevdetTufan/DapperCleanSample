@@ -56,8 +56,8 @@ const NewOrder: React.FC = () => {
                 ]);
                 setCustomers(customerList);
                 setProducts(productList);
-            } catch {
-                showToast('Failed to load data', 'error');
+            } catch (error) {
+                showToast(error instanceof Error ? error.message : 'Failed to load data', 'error');
             }
         };
         fetchData();
@@ -130,8 +130,8 @@ const NewOrder: React.FC = () => {
             });
             showToast('Order created successfully');
             navigate('/orders');
-        } catch {
-            showToast('Failed to create order', 'error');
+        } catch (error) {
+            showToast(error instanceof Error ? error.message : 'Failed to create order', 'error');
         } finally {
             setSaving(false);
         }

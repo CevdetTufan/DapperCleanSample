@@ -57,8 +57,7 @@ const CustomerList: React.FC = () => {
             setCustomers(result.items);
             setTotalCount(result.totalCount);
         } catch (error) {
-            showToast('Failed to load customers', 'error');
-            console.error(error);
+            showToast(error instanceof Error ? error.message : 'Failed to load customers', 'error');
         } finally {
             setLoading(false);
         }
@@ -115,8 +114,8 @@ const CustomerList: React.FC = () => {
             }
             setDialogOpen(false);
             fetchCustomers();
-        } catch {
-            showToast('Failed to save customer', 'error');
+        } catch (error) {
+            showToast(error instanceof Error ? error.message : 'Failed to save customer', 'error');
         } finally {
             setSaving(false);
         }
@@ -129,8 +128,8 @@ const CustomerList: React.FC = () => {
             showToast('Customer deleted successfully');
             setDeleteTarget(null);
             fetchCustomers();
-        } catch {
-            showToast('Failed to delete customer', 'error');
+        } catch (error) {
+            showToast(error instanceof Error ? error.message : 'Failed to delete customer', 'error');
         }
     };
 

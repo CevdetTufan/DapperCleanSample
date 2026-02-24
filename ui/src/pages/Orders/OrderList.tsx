@@ -42,8 +42,7 @@ const OrderList: React.FC = () => {
             setOrders(result.items);
             setTotalCount(result.totalCount);
         } catch (error) {
-            showToast('Failed to load orders', 'error');
-            console.error(error);
+            showToast(error instanceof Error ? error.message : 'Failed to load orders', 'error');
         } finally {
             setLoading(false);
         }
@@ -60,8 +59,8 @@ const OrderList: React.FC = () => {
             showToast('Order deleted successfully');
             setDeleteTarget(null);
             fetchOrders();
-        } catch {
-            showToast('Failed to delete order', 'error');
+        } catch (error) {
+            showToast(error instanceof Error ? error.message : 'Failed to delete order', 'error');
         }
     };
 

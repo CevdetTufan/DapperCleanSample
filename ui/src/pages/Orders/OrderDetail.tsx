@@ -41,8 +41,8 @@ const OrderDetail: React.FC = () => {
         try {
             const data = await orderService.getWithItems(parseInt(id));
             setOrder(data);
-        } catch {
-            showToast('Failed to load order details', 'error');
+        } catch (error) {
+            showToast(error instanceof Error ? error.message : 'Failed to load order details', 'error');
         } finally {
             setLoading(false);
         }
@@ -58,8 +58,8 @@ const OrderDetail: React.FC = () => {
             await action();
             showToast(successMsg);
             fetchOrder();
-        } catch {
-            showToast('Action failed', 'error');
+        } catch (error) {
+            showToast(error instanceof Error ? error.message : 'Action failed', 'error');
         } finally {
             setActionLoading(false);
         }

@@ -14,6 +14,10 @@ builder.Services.AddInfrastructure(connectionString);
 
 builder.Services.AddOpenApi();
 
+// RFC 9457 Problem Details standardı — tüm API hataları { type, title, status, detail } formatında döner.
+// Frontend bu yapıyı parse ederek kullanıcıya anlamlı hata mesajları gösterebilir.
+builder.Services.AddProblemDetails();
+
 // CORS (Cross-Origin Resource Sharing) politikası tanımlanıyor.
 // Tarayıcılar, güvenlik nedeniyle farklı origin'lerden (farklı port/domain) gelen API isteklerini varsayılan olarak engeller.
 // "AllowUI" adlı bu politika; Vite geliştirme sunucusunun çalıştığı http://localhost:5173 adresinden gelen
