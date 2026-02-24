@@ -14,11 +14,16 @@ builder.Services.AddInfrastructure(connectionString);
 
 builder.Services.AddOpenApi();
 
+// CORS (Cross-Origin Resource Sharing) politikası tanımlanıyor.
+// Tarayıcılar, güvenlik nedeniyle farklı origin'lerden (farklı port/domain) gelen API isteklerini varsayılan olarak engeller.
+// "AllowUI" adlı bu politika; Vite geliştirme sunucusunun çalıştığı http://localhost:5173 adresinden gelen
+// tüm HTTP metodlarına (GET, POST, PUT, DELETE vb.) ve tüm header'lara izin verir.
+// Politika, aşağıda app.UseCors("AllowUI") ile middleware pipeline'a eklenerek aktif hale getirilir.
 builder.Services.AddCors(options =>
 {
 	options.AddPolicy("AllowUI", policy =>
 	{
-		policy.WithOrigins("http://localhost:3000", "http://localhost:5173")
+		policy.WithOrigins("http://localhost:5173")
 			  .AllowAnyHeader()
 			  .AllowAnyMethod();
 	});
