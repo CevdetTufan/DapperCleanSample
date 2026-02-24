@@ -10,9 +10,9 @@ public interface IOrderService
 	Task<IEnumerable<OrderDto>> GetByCustomerIdAsync(int customerId);
 	Task<PagedResult<OrderDto>> GetPagedAsync(int pageNumber, int pageSize);
 	Task<int> CreateAsync(CreateOrderRequest request);
-	Task<bool> MarkAsPaidAsync(int id);
-	Task<bool> ShipAsync(int id);
-	Task<bool> DeliverAsync(int id);
-	Task<bool> CancelAsync(int id);
-	Task<bool> DeleteAsync(int id);
+	Task MarkAsPaidAsync(int id);
+	Task ShipAsync(int id);
+	Task DeliverAsync(int id);
+	Task CancelAsync(int id);
+	Task DeleteAsync(int id);
 }

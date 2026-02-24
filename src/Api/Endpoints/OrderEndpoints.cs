@@ -76,31 +76,31 @@ public class OrderEndpoints : IEndpoint
 
 	private static async Task<IResult> MarkAsPaidAsync(int id, IOrderService service)
 	{
-		var success = await service.MarkAsPaidAsync(id);
-		return success ? Results.NoContent() : Results.NotFound();
+		await service.MarkAsPaidAsync(id);
+		return Results.NoContent();
 	}
 
 	private static async Task<IResult> ShipAsync(int id, IOrderService service)
 	{
-		var success = await service.ShipAsync(id);
-		return success ? Results.NoContent() : Results.NotFound();
+		await service.ShipAsync(id);
+		return Results.NoContent();
 	}
 
 	private static async Task<IResult> DeliverAsync(int id, IOrderService service)
 	{
-		var success = await service.DeliverAsync(id);
-		return success ? Results.NoContent() : Results.NotFound();
+		await service.DeliverAsync(id);
+		return Results.NoContent();
 	}
 
 	private static async Task<IResult> CancelAsync(int id, IOrderService service)
 	{
-		var success = await service.CancelAsync(id);
-		return success ? Results.NoContent() : Results.NotFound();
+		await service.CancelAsync(id);
+		return Results.NoContent();
 	}
 
 	private static async Task<IResult> DeleteAsync(int id, IOrderService service)
 	{
-		var success = await service.DeleteAsync(id);
-		return success ? Results.NoContent() : Results.NotFound();
+		await service.DeleteAsync(id);
+		return Results.NoContent();
 	}
 }

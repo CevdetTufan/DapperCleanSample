@@ -1,4 +1,5 @@
 using Api.Endpoints;
+using Api.Infrastructure;
 using Application;
 using Infrastructure;
 using Infrastructure.Data;
@@ -17,6 +18,7 @@ builder.Services.AddOpenApi();
 // RFC 9457 Problem Details standardı — tüm API hataları { type, title, status, detail } formatında döner.
 // Frontend bu yapıyı parse ederek kullanıcıya anlamlı hata mesajları gösterebilir.
 builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
 // CORS (Cross-Origin Resource Sharing) politikası tanımlanıyor.
 // Tarayıcılar, güvenlik nedeniyle farklı origin'lerden (farklı port/domain) gelen API isteklerini varsayılan olarak engeller.
@@ -58,6 +60,7 @@ if (app.Environment.IsDevelopment())
 	app.MapScalarApiReference();
 }
 
+app.UseExceptionHandler();
 app.UseCors("AllowUI");
 
 app.UseHttpsRedirection();

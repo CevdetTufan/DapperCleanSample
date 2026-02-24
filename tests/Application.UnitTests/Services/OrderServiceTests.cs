@@ -3,6 +3,7 @@ using Application.Services;
 using Domain.Common;
 using Domain.Entities;
 using Domain.Enums;
+using Domain.Exceptions;
 using Domain.Interfaces;
 using FluentAssertions;
 using NSubstitute;
@@ -158,7 +159,7 @@ public class OrderServiceTests
 	}
 
 	[Fact]
-	public async Task MarkAsPaidAsync_WhenOrderExists_ReturnsTrue()
+	public async Task MarkAsPaidAsync_WhenOrderExists_UpdatesOrderStatus()
 	{
 		// Arrange
 		var order = new Order(1);
@@ -166,29 +167,27 @@ public class OrderServiceTests
 		_orderRepository.UpdateAsync(Arg.Any<Order>()).Returns(true);
 
 		// Act
-		var result = await _sut.MarkAsPaidAsync(1);
+		await _sut.MarkAsPaidAsync(1);
 
 		// Assert
-		result.Should().BeTrue();
 		await _orderRepository.Received(1).UpdateAsync(Arg.Is<Order>(o => o.Status == OrderStatus.Paid));
 	}
 
 	[Fact]
-	public async Task MarkAsPaidAsync_WhenOrderNotExists_ReturnsFalse()
+	public async Task MarkAsPaidAsync_WhenOrderNotExists_ThrowsNotFoundException()
 	{
 		// Arrange
 		_orderRepository.GetByIdAsync(1).Returns((Order?)null);
 
 		// Act
-		var result = await _sut.MarkAsPaidAsync(1);
+		var act = () => _sut.MarkAsPaidAsync(1);
 
 		// Assert
-		result.Should().BeFalse();
-		await _orderRepository.DidNotReceive().UpdateAsync(Arg.Any<Order>());
+		await act.Should().ThrowAsync<NotFoundException>();
 	}
 
 	[Fact]
-	public async Task ShipAsync_WhenOrderExistsAndPaid_ReturnsTrue()
+	public async Task ShipAsync_WhenOrderExistsAndPaid_UpdatesOrderStatus()
 	{
 		// Arrange
 		var order = new Order(1);
@@ -197,29 +196,27 @@ public class OrderServiceTests
 		_orderRepository.UpdateAsync(Arg.Any<Order>()).Returns(true);
 
 		// Act
-		var result = await _sut.ShipAsync(1);
+		await _sut.ShipAsync(1);
 
 		// Assert
-		result.Should().BeTrue();
 		await _orderRepository.Received(1).UpdateAsync(Arg.Is<Order>(o => o.Status == OrderStatus.Shipped));
 	}
 
 	[Fact]
-	public async Task ShipAsync_WhenOrderNotExists_ReturnsFalse()
+	public async Task ShipAsync_WhenOrderNotExists_ThrowsNotFoundException()
 	{
 		// Arrange
 		_orderRepository.GetByIdAsync(1).Returns((Order?)null);
 
 		// Act
-		var result = await _sut.ShipAsync(1);
+		var act = () => _sut.ShipAsync(1);
 
 		// Assert
-		result.Should().BeFalse();
-		await _orderRepository.DidNotReceive().UpdateAsync(Arg.Any<Order>());
+		await act.Should().ThrowAsync<NotFoundException>();
 	}
 
 	[Fact]
-	public async Task DeliverAsync_WhenOrderExistsAndShipped_ReturnsTrue()
+	public async Task DeliverAsync_WhenOrderExistsAndShipped_UpdatesOrderStatus()
 	{
 		// Arrange
 		var order = new Order(1);
@@ -229,29 +226,27 @@ public class OrderServiceTests
 		_orderRepository.UpdateAsync(Arg.Any<Order>()).Returns(true);
 
 		// Act
-		var result = await _sut.DeliverAsync(1);
+		await _sut.DeliverAsync(1);
 
 		// Assert
-		result.Should().BeTrue();
 		await _orderRepository.Received(1).UpdateAsync(Arg.Is<Order>(o => o.Status == OrderStatus.Delivered));
 	}
 
 	[Fact]
-	public async Task DeliverAsync_WhenOrderNotExists_ReturnsFalse()
+	public async Task DeliverAsync_WhenOrderNotExists_ThrowsNotFoundException()
 	{
 		// Arrange
 		_orderRepository.GetByIdAsync(1).Returns((Order?)null);
 
 		// Act
-		var result = await _sut.DeliverAsync(1);
+		var act = () => _sut.DeliverAsync(1);
 
 		// Assert
-		result.Should().BeFalse();
-		await _orderRepository.DidNotReceive().UpdateAsync(Arg.Any<Order>());
+		await act.Should().ThrowAsync<NotFoundException>();
 	}
 
 	[Fact]
-	public async Task CancelAsync_WhenOrderExistsAndPending_ReturnsTrue()
+	public async Task CancelAsync_WhenOrderExistsAndPending_UpdatesOrderStatus()
 	{
 		// Arrange
 		var order = new Order(1);
@@ -259,25 +254,23 @@ public class OrderServiceTests
 		_orderRepository.UpdateAsync(Arg.Any<Order>()).Returns(true);
 
 		// Act
-		var result = await _sut.CancelAsync(1);
+		await _sut.CancelAsync(1);
 
 		// Assert
-		result.Should().BeTrue();
 		await _orderRepository.Received(1).UpdateAsync(Arg.Is<Order>(o => o.Status == OrderStatus.Cancelled));
 	}
 
 	[Fact]
-	public async Task CancelAsync_WhenOrderNotExists_ReturnsFalse()
+	public async Task CancelAsync_WhenOrderNotExists_ThrowsNotFoundException()
 	{
 		// Arrange
 		_orderRepository.GetByIdAsync(1).Returns((Order?)null);
 
 		// Act
-		var result = await _sut.CancelAsync(1);
+		var act = () => _sut.CancelAsync(1);
 
 		// Assert
-		result.Should().BeFalse();
-		await _orderRepository.DidNotReceive().UpdateAsync(Arg.Any<Order>());
+		await act.Should().ThrowAsync<NotFoundException>();
 	}
 
 	[Fact]
@@ -288,25 +281,25 @@ public class OrderServiceTests
 		_orderRepository.DeleteAsync(1).Returns(true);
 
 		// Act
-		var result = await _sut.DeleteAsync(1);
+		await _sut.DeleteAsync(1);
 
 		// Assert
-		result.Should().BeTrue();
 		await _orderItemRepository.Received(1).DeleteByOrderIdAsync(1);
 		await _orderRepository.Received(1).DeleteAsync(1);
 	}
 
 	[Fact]
-	public async Task DeleteAsync_WhenOrderNotExists_ReturnsFalse()
+	public async Task DeleteAsync_WhenOrderNotExists_StillCompletes()
 	{
 		// Arrange
 		_orderItemRepository.DeleteByOrderIdAsync(1).Returns(true);
 		_orderRepository.DeleteAsync(1).Returns(false);
 
 		// Act
-		var result = await _sut.DeleteAsync(1);
+		await _sut.DeleteAsync(1);
 
 		// Assert
-		result.Should().BeFalse();
+		await _orderItemRepository.Received(1).DeleteByOrderIdAsync(1);
+		await _orderRepository.Received(1).DeleteAsync(1);
 	}
 }

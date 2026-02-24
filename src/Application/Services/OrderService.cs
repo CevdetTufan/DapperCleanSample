@@ -2,6 +2,7 @@ using Application.DTOs.Order;
 using Application.Mappings;
 using Domain.Common;
 using Domain.Entities;
+using Domain.Exceptions;
 using Domain.Interfaces;
 
 namespace Application.Services;
@@ -56,49 +57,76 @@ public class OrderService : IOrderService
 		return orderId;
 	}
 
-	public async Task<bool> MarkAsPaidAsync(int id)
+	public async Task MarkAsPaidAsync(int id)
 	{
-		var order = await _orderRepository.GetByIdAsync(id);
-		if (order is null)
-			return false;
+		var order = await _orderRepository.GetByIdAsync(id)
+			?? throw new NotFoundException(nameof(Order), id);
 
-		order.MarkAsPaid();
-		return await _orderRepository.UpdateAsync(order);
+		try
+		{
+			order.MarkAsPaid();
+			await _orderRepository.UpdateAsync(order);
+		}
+		catch (InvalidOperationException ex)
+		{
+			throw new BusinessRuleException("OrderStatus", ex.Message);
+		}
 	}
 
-	public async Task<bool> ShipAsync(int id)
+	public async Task ShipAsync(int id)
 	{
-		var order = await _orderRepository.GetByIdAsync(id);
-		if (order is null)
-			return false;
+		var order = await _orderRepository.GetByIdAsync(id)
+			?? throw new NotFoundException(nameof(Order), id);
 
-		order.Ship();
-		return await _orderRepository.UpdateAsync(order);
+		try
+		{
+			order.Ship();
+			await _orderRepository.UpdateAsync(order);
+		}
+		catch (InvalidOperationException ex)
+		{
+			throw new BusinessRuleException("OrderStatus", ex.Message);
+		}
 	}
 
-	public async Task<bool> DeliverAsync(int id)
+	public async Task DeliverAsync(int id)
 	{
-		var order = await _orderRepository.GetByIdAsync(id);
-		if (order is null)
-			return false;
+		var order = await _orderRepository.GetByIdAsync(id)
+			?? throw new NotFoundException(nameof(Order), id);
 
-		order.Deliver();
-		return await _orderRepository.UpdateAsync(order);
+		try
+		{
+			order.Deliver();
+			await _orderRepository.UpdateAsync(order);
+		}
+		catch (InvalidOperationException ex)
+		{
+			throw new BusinessRuleException("OrderStatus", ex.Message);
+		}
 	}
 
-	public async Task<bool> CancelAsync(int id)
+	public async Task CancelAsync(int id)
 	{
-		var order = await _orderRepository.GetByIdAsync(id);
-		if (order is null)
-			return false;
+		var order = await _orderRepository.GetByIdAsync(id)
+			?? throw new NotFoundException(nameof(Order), id);
 
-		order.Cancel();
-		return await _orderRepository.UpdateAsync(order);
+		try
+		{
+			order.Cancel();
+			await _orderRepository.UpdateAsync(order);
+		}
+		catch (InvalidOperationException ex)
+		{
+			throw new BusinessRuleException("OrderStatus", ex.Message);
+		}
 	}
 
-	public async Task<bool> DeleteAsync(int id)
+	public async Task DeleteAsync(int id)
 	{
+		var exists = await _orderRepository.GetByIdAsync(id)
+			?? throw new NotFoundException(nameof(Order), id);
+
 		await _orderItemRepository.DeleteByOrderIdAsync(id);
-		return await _orderRepository.DeleteAsync(id);
+		await _orderRepository.DeleteAsync(id);
 	}
 }
